@@ -1,20 +1,59 @@
+import wollok.game.*
 import pepita.*
 import comidas.*
+import extras.*
+import direcciones.*
 
 describe "Tests de Pepita" {
 
+	method initialize(){
+		game.height(10)
+		game.width(10)
+
+		game.clear()
+
+		game.addVisual(pepita)
+	}
+
+	test "Pepita comienza con energia 100"{
+		assert.equals(100, pepita.energia())
+	}
+
+	test "Pepita al volar 1 km, queda con energia 91"{
+		pepita.volar(1)
+		assert.equals(91, pepita.energia())
+	}
+
+	test "Pepita al comer manzana sube energia y desaparece manzana"{
+		game.addVisual(manzana)
+		pepita.position(manzana.position())
+
+		pepita.comerAca()
+		assert.equals(105, pepita.energia())
+		assert.notThat(game.hasVisual(manzana))
+	}
+
+	test "Pepita al volar 2 km, queda con energia 82"{
+		pepita.volar(2)
+		assert.equals(82, pepita.energia())
+	}
 
 	test "Al comer pepita aumenta su energia" {
 		pepita.comer(manzana)
 		assert.equals(105, pepita.energia())
+		game.addVisual(silvestre)
+		
+		assert.that(game.hasVisual(pepita))
 	}
 
-	test "Al volar pepita pierde energia" {
-		pepita.volar(1)
-		assert.equals(89, pepita.energia())
+	test "al mover arriba queda en 0@1" {
+		pepita.position(game.at(0,0))
+		
+		pepita.mover(arriba)
+		
+		assert.equals(game.at(0,1), pepita.position())
 	}
 
 
 
 }
-
