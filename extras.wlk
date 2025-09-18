@@ -15,16 +15,10 @@ object silvestre{
 
     method position() = game.at(self.x(), 0)
 
+    method reiniciar() {
+        self.x()
+    }
+
     method x() = 3.max(presa.position().x()) //presa.position().x().max(3)
     //if(presa.position().x() >= 3) { presa.position().x()} else { 3 }
-
 }
-
-object manzana{
-    const property position = game.at(1, 1)
-
-    method image() = "manzana.png"
-
-    method energiaQueOtorga() = 14
-}
-

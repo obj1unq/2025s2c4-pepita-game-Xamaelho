@@ -1,6 +1,11 @@
 import extras.*
 import comidas.*
+import niveles.*
 import wollok.game.*
+
+object paleta {
+  const property rojo = "FF0000FF"
+}
 
 object pepita {
 	var property position = game.at(0,1)
@@ -24,8 +29,6 @@ object pepita {
 
 	method puedeMover() = (energia >= self.energiaNecesaria(1) && 
 						   not self.esAtrapada() )
-	
-	method estaEnRango() = self.position().x() < game.width() && self.position().y() < game.height()
 
 	method esAtrapada() = self.estaSobre(predador)
 
@@ -35,12 +38,20 @@ object pepita {
 		
 	method text() = "Energia: \n" + energia
 
-	method textColor() = "FF0000"
+	method text(mensaje) = mensaje
+
+	method textColor() = paleta.rojo()
 
 	method energiaNecesaria(kms) = joules * kms
 
-	method comer(comida) {
-		energia = energia + comida.energiaQueOtorga()
+	method reiniciar() {
+		position = game.at(0,1)
+		energia = 100
+	}
+
+	method comerEnPosicionActual() {
+		energia = energia + self.loQueHayAca().energiaQueOtorga()
+		game.removeVisual(self.loQueHayAca())
 	}
 
 	method volar(kms) {
@@ -49,16 +60,20 @@ object pepita {
 
 	method mover(direccion){
 		if(self.puedeMover() ){
-			if (self.dentroDelTablero(direccion)){
+			if (self.estaEnRango(direccion)){
 				self.volar(1)
 				position = direccion.siguiente(position)
+			}
+			if (energia <= self.energiaNecesaria(1)) {
+				game.say(self, "Estoy cansada!")
+				self.perder()
 			}
 		} else {
 			self.perder()
 		}
 	}
 
-	method dentroDelTablero(direccion) {
+	method estaEnRango(direccion) {
 		const nuevaPosicion = direccion.siguiente(position)
 		return (nuevaPosicion.x() >= 0 && 
 				nuevaPosicion.y() >= 0 && 
@@ -67,7 +82,16 @@ object pepita {
 	}
 
 	method perder(){
-		game.say(self, "Perdí!")
+		game.say(self, "Perdiste! Presiona R para reiniciar o T para terminar")
+		keyboard.r().onPressDo( {self.reset()} )
+		keyboard.t().onPressDo( {self.terminar()} )
+	}
+
+	method reset() {
+		nivel1.resetear()
+	}
+
+	method terminar() {
 		game.schedule( 2000, { game.stop() })
 	}
 	
