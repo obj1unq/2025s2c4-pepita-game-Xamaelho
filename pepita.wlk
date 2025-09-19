@@ -18,17 +18,25 @@ object pepita {
         return "pepita-" + self.estado() + ".png"
     }
 
+	method energia() = energia
+
 	method estado(){
-		//(self.esAtrapada() or not self.conEnergia()){ "gris" }
 		return if (self.esAtrapada() || !self.puedeMover()){ "gris" }
 		    	else if (self.enHogar()){ "grande"  }
 				else { "base" }
 	}
 
-	method loQueHayAca() = game.uniqueCollider(self)
-
 	method puedeMover() = (energia >= self.energiaNecesaria(1) && 
 						   not self.esAtrapada() )
+
+
+	method estaEnRango(direccion) {
+		const nuevaPosicion = direccion.siguiente(position)
+		return (nuevaPosicion.x() >= 0 && 
+				nuevaPosicion.y() >= 0 && 
+				nuevaPosicion.x() < game.width() && 
+				nuevaPosicion.y() < game.height())
+	}
 
 	method esAtrapada() = self.estaSobre(predador)
 
@@ -49,9 +57,9 @@ object pepita {
 		energia = 100
 	}
 
-	method comerEnPosicionActual() {
-		energia = energia + self.loQueHayAca().energiaQueOtorga()
-		game.removeVisual(self.loQueHayAca())
+	method comerEnPosicionActual(alimento) {
+		energia = energia + alimento.energiaQueOtorga()
+		game.removeVisual(alimento)
 	}
 
 	method volar(kms) {
@@ -64,39 +72,19 @@ object pepita {
 				self.volar(1)
 				position = direccion.siguiente(position)
 			}
-			if (energia <= self.energiaNecesaria(1)) {
+			if (energia < self.energiaNecesaria(1)) {
 				game.say(self, "Estoy cansada!")
-				self.perder()
+				nivel.perder(self)
 			}
 		} else {
-			self.perder()
+			nivel.perder(self)
 		}
 	}
-
-	method estaEnRango(direccion) {
-		const nuevaPosicion = direccion.siguiente(position)
-		return (nuevaPosicion.x() >= 0 && 
-				nuevaPosicion.y() >= 0 && 
-				nuevaPosicion.x() < game.width() && 
-				nuevaPosicion.y() < game.height())
-	}
-
-	method perder(){
-		game.say(self, "Perdiste! Presiona R para reiniciar o T para terminar")
-		keyboard.r().onPressDo( {self.reset()} )
-		keyboard.t().onPressDo( {self.terminar()} )
-	}
-
-	method reset() {
-		nivel1.resetear()
-	}
-
-	method terminar() {
-		game.schedule( 2000, { game.stop() })
-	}
 	
-	method energia() {
-		return energia
+	method descender() {
+		if (position.y() > 0 && self.puedeMover() ) {
+			position = game.at(position.x(),position.y()-1)
+		}
 	}
 
 }

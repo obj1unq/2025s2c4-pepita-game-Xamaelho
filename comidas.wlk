@@ -18,6 +18,9 @@ object manzana {
 		madurez = madurez + 1
 	}
 
+	method teCruzasteCon(personaje) {
+		personaje.comerEnPosicionActual(self)
+	}
 	method reiniciar() {
 		madurez = 1
 	}
@@ -30,5 +33,10 @@ object alpiste {
     method image() = "alpiste.png"
 
 	method energiaQueOtorga() = 15
+
+	method teCruzasteCon(personaje) {
+		personaje.comerEnPosicionActual(self)
+	}
+	
 }
 

@@ -15,7 +15,7 @@ program pepitaGame {
 
 	game.boardGround("fondo2.jpg")
 	
-	nivel1.inicializar()
+	nivel.inicializar()
 
 	game.start()	
 }

@@ -28,7 +28,7 @@ describe "Tests de Pepita" {
 		game.addVisual(manzana)
 		pepita.position(manzana.position())
 
-		pepita.comerAca()
+		pepita.comerEnPosicionActual()
 		assert.equals(105, pepita.energia())
 		assert.notThat(game.hasVisual(manzana))
 	}
@@ -39,7 +39,7 @@ describe "Tests de Pepita" {
 	}
 
 	test "Al comer pepita aumenta su energia" {
-		pepita.comer(manzana)
+		pepita.comerEnPosicionActual()
 		assert.equals(105, pepita.energia())
 		game.addVisual(silvestre)
 		
