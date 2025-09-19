@@ -8,6 +8,7 @@ object nido{
     method image() = "nido.png"
 
     method teCruzasteCon(personaje) {
+        game.say(personaje, "GANE!")
         nivel.ganar()
     }
 
@@ -28,6 +29,7 @@ object silvestre{
     //if(presa.position().x() >= 3) { presa.position().x()} else { 3 }
 
     method teCruzasteCon(personaje) {
-        personaje.perder()
+        game.say(personaje, "PERDI!")
+        nivel.perder(self)
     }
 }
